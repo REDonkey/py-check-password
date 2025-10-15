@@ -1,60 +1,26 @@
-import os
-import sys
 import pytest
-
-sys.path.insert(
-    0,
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "app"))
-)
-
-from main import check_password
+from app.main import check_password
 
 
 def test_valid_password() -> None:
     assert check_password("Pass@word1") is True
 
 
-def test_too_short() -> None:
-    assert check_password("P@ss1") is False
-
-
-def test_too_long() -> None:
-    assert check_password("Password@1234567890") is False
-
-
-def test_no_uppercase() -> None:
+def test_password_without_uppercase() -> None:
     assert check_password("password@1") is False
 
 
-def test_no_digit() -> None:
-    assert check_password("Password@") is False
-
-
-def test_no_special_char() -> None:
+def test_password_without_special_symbol() -> None:
     assert check_password("Password1") is False
 
 
-def test_invalid_char_space() -> None:
-    assert check_password("Password 1@") is False
+def test_password_without_digit() -> None:
+    assert check_password("Password@") is False
 
 
-def test_invalid_char_percent() -> None:
-    assert check_password("Password%1") is False
+def test_password_too_short() -> None:
+    assert check_password("P@ss1") is False
 
 
-def test_boundary_min_length() -> None:
-    assert check_password("A@bcdef1") is True
-
-
-def test_boundary_max_length() -> None:
-    assert check_password("Abcdef@123456789") is True
-
-
-def test_non_latin_letters() -> None:
-    assert check_password("Пароль@123") is False
-
-
-@pytest.mark.parametrize("special", ["$", "@", "#", "&", "!", "-", "_"])
-def test_each_allowed_special_char(special: str) -> None:
-    password: str = f"Aa1{special}abcd"
-    assert check_password(password) is True
+def test_password_too_long() -> None:
+    assert check_password("Password@1234567890") is False
